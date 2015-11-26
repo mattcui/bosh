@@ -32,7 +32,7 @@ module Bosh::Director
 
       event_log_stage.advance_and_track(vm.cid) do
         drain(vm.agent_id)
-        @cloud.delete_vm(vm.cid)
+        @cloud.delete_vm(vm.cid, nil)     #specific changes for OS Reload
         delete_snapshots(instance)
         delete_persistent_disks(instance.persistent_disks)
         delete_dns(instance.job, instance.index)

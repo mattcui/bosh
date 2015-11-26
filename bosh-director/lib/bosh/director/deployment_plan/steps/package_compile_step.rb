@@ -213,7 +213,7 @@ module Bosh::Director
           if vm.exists?
             reservation = vm_data.reservation
             @logger.info("Deleting compilation VM: #{vm.cid}")
-            @cloud.delete_vm(vm.cid)
+            @cloud.delete_vm(vm.cid, vm.agent_id)    #specific changes for OS Reload
             vm.destroy
             release_network(reservation)
           end

@@ -84,7 +84,7 @@ module Bosh::Director
               pool.process do
                 @event_log.track(vm_model.cid) do
                   @logger.info("Delete unneeded VM #{vm_model.cid}")
-                  @cloud.delete_vm(vm_model.cid)
+                  @cloud.delete_vm(vm_model.cid, nil)     #specific changes for OS Reload
                   vm_model.destroy
                 end
               end
