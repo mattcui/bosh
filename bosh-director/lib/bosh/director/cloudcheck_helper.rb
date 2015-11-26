@@ -63,7 +63,7 @@ module Bosh::Director
         handler_error("VM has persistent disk attached")
       end
 
-      cloud.delete_vm(vm.cid)
+      cloud.delete_vm(vm.cid, nil)     #specific changes for OS Reload
       vm.db.transaction do
         vm.instance.update(:vm => nil) if vm.instance
         vm.destroy
@@ -108,7 +108,7 @@ module Bosh::Director
       # to ignore "VM not found" errors in `delete_vm' and let the method
       # proceed creating a new VM. Other errors are not forgiven.
       begin
-        cloud.delete_vm(vm.cid)
+        cloud.delete_vm(vm.cid, agent_id)   #specific changes for OS Reload
       rescue Bosh::Clouds::VMNotFound => e
         @logger.warn("VM '#{vm.cid}' might have already been deleted from the cloud")
       end
@@ -120,7 +120,7 @@ module Bosh::Director
 
       cloud_properties = resource_pool_spec.fetch("cloud_properties", {})
       networks = spec["networks"]
-      new_vm = VmCreator.create(deployment, stemcell, cloud_properties, networks, Array(disk_cid), env)
+      new_vm = VmCreator.create(deployment, stemcell, cloud_properties, networks, Array(disk_cid), env, agent_id)    #specific changes for OS Reload
       new_vm.apply_spec = spec
       new_vm.save
 

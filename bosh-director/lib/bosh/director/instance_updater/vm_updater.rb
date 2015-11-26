@@ -21,10 +21,10 @@ module Bosh::Director
 
       @max_update_tries.times do |try|
         vm_deleter = VmDeleter.new(@instance, @vm_model, @cloud, @logger)
-        vm_deleter.delete
+        vm_deleter.delete(true)    #specific changes for OS Reload
 
         vm_creator = VmCreator.new(@instance, @cloud, @logger)
-        @vm_model, @agent_client = vm_creator.create(new_disk_cid)
+        @vm_model, @agent_client = vm_creator.create(new_disk_cid, agent_id)    #specific changes for OS Reload
 
         begin
           disk_attacher = DiskAttacher.new(@instance, @vm_model, @agent_client, @cloud, @logger)
@@ -81,7 +81,7 @@ module Bosh::Director
         @logger = logger
       end
 
-      def create(new_disk_id)
+      def create(new_disk_id, agent_id=nil)     #specific changes for OS Reload
         @logger.info('Creating VM')
         vm_model = new_vm_model(new_disk_id)
 
@@ -94,7 +94,7 @@ module Bosh::Director
           vm_model.update(:trusted_certs_sha1 => Digest::SHA1.hexdigest(Bosh::Director::Config.trusted_certs))
         rescue Exception => e
           @logger.error("Failed to create/contact VM #{vm_model.cid}: #{e.inspect}")
-          VmDeleter.new(@instance, vm_model, @cloud, @logger).delete
+          VmDeleter.new(@instance, vm_model, @cloud, @logger).delete(!agent_id.nil?)    #specific changes for OS Reload
           raise e
         end
 
@@ -111,7 +111,7 @@ module Bosh::Director
           resource_pool.cloud_properties,
           @instance.network_settings,
           [@instance.model.persistent_disk_cid, new_disk_id].compact,
-          resource_pool.env,
+          resource_pool.env,agent_id    #specific changes for OS Reload
         )
       end
     end
@@ -124,10 +124,11 @@ module Bosh::Director
         @logger = logger
       end
 
-      def delete
+      def delete(for_update=false)
         @logger.info('Deleting VM')
 
-        @cloud.delete_vm(@vm_model.cid)
+        agent_id = for_update ? @vm_model.agent_id : nil    #specific changes for OS Reload
+        @cloud.delete_vm(@vm_model.cid, agent_id)    #specific changes for OS Reload
 
         @instance.model.db.transaction do
           @instance.model.vm = nil

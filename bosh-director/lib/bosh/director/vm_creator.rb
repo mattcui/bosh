@@ -15,13 +15,13 @@ module Bosh::Director
     end
 
     def create(deployment, stemcell, cloud_properties, network_settings,
-               disks=nil, env={})
+               disks=nil, env={}, old_agent_id=nil)    #specific changes for OS Reload
       vm = nil
       vm_cid = nil
 
       env = Bosh::Common::DeepCopy.copy(env)
 
-      agent_id = self.class.generate_agent_id
+      agent_id = old_agent_id ? old_agent_id : self.class.generate_agent_id    #specific changes for OS Reload
 
       options = {
           :deployment => deployment,
@@ -54,13 +54,13 @@ module Bosh::Director
       vm
     rescue => e
       logger.error("error creating vm: #{e.message}")
-      delete_vm(vm_cid) if vm_cid
+      delete_vm(vm_cid, old_agent_id) if vm_cid    #specific changes for OS Reload
       vm.destroy if vm
       raise e
     end
 
-    def delete_vm(vm_cid)
-      @cloud.delete_vm(vm_cid)
+    def delete_vm(vm_cid, agent_id=nil)    #specific changes for OS Reload
+      @cloud.delete_vm(vm_cid, agent_id)    #specific changes for OS Reload
     rescue => e
       logger.error("error cleaning up #{vm_cid}: #{e.message}\n#{e.backtrace.join("\n")}")
     end
