@@ -20,6 +20,7 @@ module Bosh::Director
       disk_detacher.detach
 
       @max_update_tries.times do |try|
+        agent_id = @vm_model.agent_id    #specific changes for OS Reload
         vm_deleter = VmDeleter.new(@instance, @vm_model, @cloud, @logger)
         vm_deleter.delete(true)    #specific changes for OS Reload
 
