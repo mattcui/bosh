@@ -29,7 +29,8 @@ module Bosh::Dev
           logger.info("STEMCELL_BUILD_NUMBER is #{subnum}. Using local build with stemcell build number.")
         else
           logger.info('STEMCELL_BUILD_NUMBER not set. Using local build.')
-          subnum = '0000'
+          #subnum = '0000'
+          subnum = File.read("#{File.expand_path('../../../../../', __FILE__)}/BOSH_VERSION").strip.split('.')[1]
         end
 
         Local.new(subnum, bucket_name, LocalDownloadAdapter.new(logger), logger)
