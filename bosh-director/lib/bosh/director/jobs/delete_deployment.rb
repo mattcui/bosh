@@ -160,7 +160,7 @@ module Bosh::Director
       def delete_vm(vm)
         if vm.cid
           ignoring_errors_when_forced do
-            @cloud.delete_vm(vm.cid)
+            @cloud.delete_vm(vm.cid, nil)    #specific changes for OS Reload
           end
         end
         vm.destroy
