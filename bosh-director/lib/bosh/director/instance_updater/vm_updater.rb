@@ -102,7 +102,7 @@ module Bosh::Director
         [vm_model, agent_client]
       end
 
-      def new_vm_model(new_disk_id, agent_id)
+      def new_vm_model(new_disk_id, agent_id=nil)
         deployment = @instance.job.deployment
         resource_pool = @instance.job.resource_pool
 
