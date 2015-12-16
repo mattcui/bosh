@@ -84,7 +84,7 @@ module Bosh::Director
 
       def create(new_disk_id, agent_id=nil)     #specific changes for OS Reload
         @logger.info('Creating VM')
-        vm_model = new_vm_model(new_disk_id)
+        vm_model = new_vm_model(new_disk_id, agent_id)
 
         begin
           @instance.bind_to_vm_model(vm_model)
@@ -102,7 +102,7 @@ module Bosh::Director
         [vm_model, agent_client]
       end
 
-      def new_vm_model(new_disk_id)
+      def new_vm_model(new_disk_id, agent_id)
         deployment = @instance.job.deployment
         resource_pool = @instance.job.resource_pool
 
@@ -112,7 +112,7 @@ module Bosh::Director
           resource_pool.cloud_properties,
           @instance.network_settings,
           [@instance.model.persistent_disk_cid, new_disk_id].compact,
-          resource_pool.env,agent_id    #specific changes for OS Reload
+          resource_pool.env, agent_id    #specific changes for OS Reload
         )
       end
     end
