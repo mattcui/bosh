@@ -120,7 +120,7 @@ module Bosh::Director
 
       cloud_properties = resource_pool_spec.fetch("cloud_properties", {})
       networks = spec["networks"]
-      new_vm = VmCreator.create(deployment, stemcell, cloud_properties, networks, Array(disk_cid), env, agent_id)    #specific changes for OS Reload
+      new_vm = VmCreator.create(deployment, stemcell, cloud_properties, networks, Array(disk_cid), env, vm.agent_id)    #specific changes for OS Reload
       new_vm.apply_spec = spec
       new_vm.save
 
