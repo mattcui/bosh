@@ -108,7 +108,7 @@ module Bosh::Director
       # to ignore "VM not found" errors in `delete_vm' and let the method
       # proceed creating a new VM. Other errors are not forgiven.
       begin
-        cloud.delete_vm(vm.cid, agent_id)   #specific changes for OS Reload
+        cloud.delete_vm(vm.cid, vm.agent_id)   #specific changes for OS Reload
       rescue Bosh::Clouds::VMNotFound => e
         @logger.warn("VM '#{vm.cid}' might have already been deleted from the cloud")
       end
