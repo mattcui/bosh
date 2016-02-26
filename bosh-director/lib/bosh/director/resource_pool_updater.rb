@@ -94,7 +94,7 @@ module Bosh::Director
         thread_pool.process do
           @event_log.track("#{@resource_pool.name}/#{vm_cid}") do
             @logger.info("Deleting extra VM: #{vm_cid}")
-            @cloud.delete_vm(vm_cid)
+            @cloud.delete_vm(vm_cid, nil)
             vm.model.destroy
           end
         end
@@ -118,7 +118,7 @@ module Bosh::Director
 
             with_thread_name("delete_outdated_vm(#{@resource_pool.name}, #{index - 1}/#{count})") do
               @logger.info("Deleting outdated VM: #{vm_cid}")
-              @cloud.delete_vm(vm_cid)
+              @cloud.delete_vm(vm_cid, nil)
               vm_model = vm.model
               vm.clean_vm
               vm_model.destroy
